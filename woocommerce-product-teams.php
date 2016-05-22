@@ -399,7 +399,7 @@ class WC_Product_Teams{
 
 
 	/**
-	 * Override the regular realated products to now only be related from the team's products
+	 * Override the regular related products to now only be related from the team's products
 	 */
 	function team_related_products( $args) {
 		global $woocommerce, $product;
