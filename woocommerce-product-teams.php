@@ -25,6 +25,8 @@ class WC_Product_Teams{
 	function __construct() {
 		add_action( 'init', array( &$this, 'init') );
 		add_action( 'init', array( $this, 'register_teams_taxonomy' ) );
+		
+		
 	}
 
 	function init() {
@@ -53,6 +55,9 @@ class WC_Product_Teams{
 
 		// Override the related products
 		add_filter( 'woocommerce_related_products_args', array( $this, 'team_related_products' ), 10 ) ;
+
+		// show team description on team index
+		add_action( 'woocommerce_before_shop_loop', array( $this,'add_product_team_notice' ), 9 );
 
 	}
 
@@ -420,6 +425,23 @@ class WC_Product_Teams{
 		}
 		return $args;
 
+	}
+
+	/**
+	 * Show team description on the team archive
+	 */
+	function add_product_team_notice() {
+		if ( is_tax( 'product_team' ) ) {
+			$term_id = get_queried_object_id();
+			$term = get_term( $term_id);
+			$name = $term->name;
+			$description = $term->description;
+			if ( ! empty($description) ) {
+				echo '<div class="woocommerce-info"><h4>Please Read Import Details Below</h4>';
+				echo '<p>' . $description . '</p>';
+				echo '</div>';
+			}
+		}
 	}
 	
 }
