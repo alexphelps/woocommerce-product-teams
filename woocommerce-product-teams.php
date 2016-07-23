@@ -288,7 +288,7 @@ class WC_Product_Teams{
 	}
 
 	/**
-	 * Save Term data when new team is edited
+	 * Add Team thumbnail to admin columns
 	 */
 	function product_team_columns( $columns ) {
 		$new_columns          = array();
