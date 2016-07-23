@@ -62,6 +62,9 @@ class WC_Product_Teams{
 		// show team description on team index
 		add_action( 'woocommerce_before_shop_loop', array( $this,'add_product_team_notice' ), 9 );
 
+		// save the team on new order
+		add_action( 'woocommerce_thankyou', array( $this, 'save_team_on_new_order' ) ); 
+
 	}
 
 	/**
@@ -447,7 +450,7 @@ class WC_Product_Teams{
 	/**
 	 * Override the regular related products to now only be related from the team's products
 	 */
-	function team_related_products( $args) {
+	function team_related_products( $args ) {
 		global $woocommerce, $product;
 
 		if ( is_object_in_term($product->id, 'product_team') ) {
@@ -485,7 +488,26 @@ class WC_Product_Teams{
 		}
 	}
 
+	/**
+	 * Save team on new order
+	 */
+	function save_team_on_new_order( $order_id ) {
 
+		$order = new WC_Order( $order_id );
+		$items = $order->get_items();
+		
+		foreach ( $items as $item ) {
+			
+		    $product_id = $item['product_id'];
+			$teams = wp_get_post_terms( $product_id, 'product_team' );
+
+			foreach ( $teams as $team ) {
+				wp_set_post_terms( $order_id, $team->term_id, 'product_team', true );
+			}
+		    
+		}
+
+	}
 
 	
 }
