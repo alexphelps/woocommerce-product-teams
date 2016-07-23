@@ -92,7 +92,7 @@ class WC_Product_Teams{
 			 'show_admin_column' => true
 		 );
 
-		register_taxonomy("product_team", array("product"), $args );
+		register_taxonomy('product_team', array('product','shop_order'), $args );
 		 
 	}
 
@@ -443,6 +443,9 @@ class WC_Product_Teams{
 			}
 		}
 	}
+
+
+
 	
 }
 
