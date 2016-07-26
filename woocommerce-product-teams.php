@@ -65,6 +65,9 @@ class WC_Product_Teams{
 		// save the team on new order
 		add_action( 'woocommerce_thankyou', array( $this, 'save_team_on_new_order' ) ); 
 
+		// override woocommerce stock and backorder settings if a product is in a team
+		add_action('woocommerce_process_product_meta_variable', array( $this, 'override_team_product_stock_and_backorder' ), 10, 1 );
+
 	}
 
 	/**
@@ -509,6 +512,32 @@ class WC_Product_Teams{
 
 	}
 
+
+	/**
+	 * Automatically set the stock, stock status, and back order setting
+	 */
+	function override_team_product_stock_and_backorder( $post_id ) {
+		global $woocommerce, $product;
+		
+		if ( is_object_in_term($product->id, 'product_team') ) {
+			
+			if (isset( $_POST['variable_sku'] ) ) {
+				$variable_sku     = $_POST['variable_sku'];
+				$variable_post_id = $_POST['variable_post_id'];
+				$manage_stock_setting = 'yes';
+				$stock_status_setting = 'instock';
+				$backorder_setting = 'yes';
+
+				for ( $i = 0; $i < sizeof( $variable_sku ); $i++ ) {
+					$variation_id = (int) $variable_post_id[$i];
+					update_post_meta( $variation_id, '_manage_stock', $manage_stock_setting );
+					update_post_meta( $variation_id, '_stock_status', $stock_status_setting );
+					update_post_meta( $variation_id, '_backorders', $backorder_setting );
+				}
+			}
+		}
+
+	}
 	
 }
 
