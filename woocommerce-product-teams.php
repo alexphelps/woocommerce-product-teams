@@ -9,6 +9,9 @@ Author URI: http://alexphelps.me
 Text Domain: woocommerce-product-teams
 */
 
+
+require_once dirname( __FILE__ ) . '/inc/wp-thumb/wpthumb.php';
+
 /**
  * Make sure we're not doing anything wrong
  **/
@@ -413,11 +416,24 @@ class WC_Product_Teams{
 		foreach ( $terms as $term ) {
 			$enabled = get_term_meta( $term->term_id, 'team_enabled', true );
 			$thumbnail_id = get_term_meta( $term->term_id, 'product_team_thumbnail_id', true );
-			$image = wp_get_attachment_image_src( $thumbnail_id, array( 300, 300 ) );
+			$image = wp_get_attachment_image_src( $thumbnail_id, 'full' );
+			$arg_defaults = array(
+                'width'              => 350,
+                'height'             => 350,
+                'resize'             => true,
+                'crop'               => false,
+                'crop_from_position' => 'center,center',
+                'cache'              => true,
+                'default'            => null,
+                'jpeg_quality'       => 70,
+                'resize_animations'  => true,
+                'return'             => 'url',
+                'background_fill'    => 'auto'
+            );
 			if ( $enabled == 'yes') {
 				echo '<li class="product-team">';
 				echo '<a href="' . get_term_link( $term ) .'">';
-				echo '<img src="' . $image[0] . '" />';
+				echo '<img src="' . wpthumb( $image[0], $arg_defaults ) . '" />';
 				echo '<p class="product-team-name">' . $term->name . '</p>';
 				echo '</a></li>';
 			}
